@@ -1,13 +1,26 @@
 {
-    "name": "Picture inserter using content script",
-    "version": "0.0.0.1",
     "manifest_version": 3,
-    "description": "A browser extension that uses JavaScript to insert an image at the top of the current webpage.",
+    "name": "Fact Sentinel",
+    "version": "0.0.0.1",
+    "description": "Spread truth and crush misinformation.",
     "icons": {
         "16": "icons/extension-icon16x16.png",
         "32": "icons/extension-icon32x32.png",
         "48": "icons/extension-icon48x48.png",
         "128": "icons/extension-icon128x128.png"
+    },
+    "permissions": [
+        "activeTab",
+        "scripting",
+        "tabs"
+    ],
+    
+    "host_permissions": [
+        "<all_urls>"
+    ],
+
+    "background": {
+        "service_worker": "background.js"
     },
     "action": {
         "default_popup": "popup/popup.html"
@@ -20,6 +33,7 @@
             "js": ["content-scripts/content.js"]
         }
     ],
+
     "web_accessible_resources": [
         {
             "resources": ["images/*.jpeg"],
