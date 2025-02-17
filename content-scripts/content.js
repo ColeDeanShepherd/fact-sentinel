@@ -1,4 +1,6 @@
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  console.log('asdfasdf');
+  
   const img = document.createElement("img");
   img.id = request.imageDivId;
   img.src = request.url;

@@ -1,15 +1,20 @@
-document.getElementById("start").addEventListener("click", () => {
-    chrome.runtime.sendMessage({ action: "start" }, (response) => {
-        console.log(response.status);
-    });
-});
+document
+  .getElementById("start")
+  .addEventListener("click", () => {
+    chrome.runtime.sendMessage(
+      { action: "start" },
+      response => console.log(response.status)
+    );
+  });
 
-document.getElementById("stop").addEventListener("click", () => {
-    chrome.runtime.sendMessage({ action: "stop" }, (response) => {
-        console.log(response.status);
-    });
-});
-
+document
+  .getElementById("stop")
+  .addEventListener("click", () => {
+    chrome.runtime.sendMessage(
+      { action: "stop" },
+      response => console.log(response.status)
+    );
+  });
 
 // const sendMessageId = document.getElementById("sendmessageid");
 // if (sendMessageId) {
