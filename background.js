@@ -25,6 +25,40 @@ function getRedditPostsScriptFn() {
   }));
 }
 
+async function getRedditPostComments(activeTab) {
+  const results = await chrome.scripting.executeScript({
+    target: { tabId: activeTab.id },
+    func: getRedditPostCommentsScriptFn
+  });
+
+  if (results.length !== 1) {
+    throw new Error("Unexpected number of results");
+  }
+
+  const result = results[0];
+  if (result.error !== undefined) {
+    throw new Error(result.error);
+  }
+
+  return result.result;
+}
+
+function getRedditPostCommentsScriptFn() {
+  const elems = Array.from(document.querySelectorAll('shreddit-comment'));
+  console.log('elems', elems);
+
+  return elems.map(e => {
+    const contentDiv = e.querySelector('div[slot="content"]');
+
+    return ({
+      id: e.getAttribute("thingid"),
+      parentId: e.getAttribute("parentid"),
+      author: e.getAttribute("author"),
+      text: contentDiv.innerText
+    });
+  });
+}
+
 let isRunning = false;
 
 async function startRunning() {
@@ -38,14 +72,24 @@ async function startRunning() {
   const activeTab = (await chrome.tabs.query({ active: true, currentWindow: true }))[0];
 
   // Redirect to Reddit if not already there.
-  if (!activeTab.url.includes("reddit.com")) {
+  if (!activeTab.url !== "https://www.reddit.com/") {
     await chrome.tabs.update(activeTab.id, { url: "https://www.reddit.com/" });
+
+    // Wait for page to load.
+    await new Promise(resolve => setTimeout(resolve, 3000));
   }
 
   // Get all Reddit posts.
   const posts = await getRedditPosts(activeTab);
-
   console.log('Posts: ', posts);
+
+  // Open the first post.
+  await chrome.tabs.update(activeTab.id, { url: posts[0].href });
+  await new Promise(resolve => setTimeout(resolve, 3000));
+
+  // Get the comments.
+  const comments = await getRedditPostComments(activeTab);
+  console.log('Comments: ', comments);
 }
 
 async function stopRunning() {
