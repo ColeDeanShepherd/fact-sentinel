@@ -48,13 +48,13 @@ function getRedditPostCommentsScriptFn() {
   console.log('elems', elems);
 
   return elems.map(e => {
-    const contentDiv = e.querySelector('div[slot="content"]');
+    const contentDiv = e.querySelector('div[slot="comment"]');
 
     return ({
       id: e.getAttribute("thingid"),
       parentId: e.getAttribute("parentid"),
       author: e.getAttribute("author"),
-      text: contentDiv.innerText
+      text: contentDiv?.innerText
     });
   });
 }
@@ -76,7 +76,7 @@ async function startRunning() {
     await chrome.tabs.update(activeTab.id, { url: "https://www.reddit.com/" });
 
     // Wait for page to load.
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    await new Promise(resolve => setTimeout(resolve, 5000));
   }
 
   // Get all Reddit posts.
@@ -85,7 +85,7 @@ async function startRunning() {
 
   // Open the first post.
   await chrome.tabs.update(activeTab.id, { url: posts[0].href });
-  await new Promise(resolve => setTimeout(resolve, 3000));
+  await new Promise(resolve => setTimeout(resolve, 5000));
 
   // Get the comments.
   const comments = await getRedditPostComments(activeTab);
